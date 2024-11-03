@@ -5,6 +5,5 @@ storage/
 vendor/
 composer.lock
 package-lock.json
-.env
 phpunit.xml
 public/storage
