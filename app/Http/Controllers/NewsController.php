@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\DTO\NewsDTO;
 use Illuminate\Http\Request;
 use App\Models\News;
 use Illuminate\Support\Facades\Validator;
@@ -35,7 +36,10 @@ class NewsController extends Controller
         ]);
 
         $news = News::create($request->all());
-        return response()->json($news, 201);
+
+        // Create a DTO and return it
+        $newsDTO = new NewsDTO($news->title, $news->content);
+        return response()->json($newsDTO, 201);
     }
 
     public function show($id)
@@ -46,7 +50,8 @@ class NewsController extends Controller
             return response()->json(['message' => 'News not found'], 404);
         }
 
-        return response()->json($news);
+        $newsDTO = new NewsDTO($news->title, $news->content);
+        return response()->json($newsDTO);
     }
 
     public function edit(News $news)
@@ -56,6 +61,7 @@ class NewsController extends Controller
 
     public function update(Request $request, $id)
     {
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -71,7 +77,9 @@ class NewsController extends Controller
         }
 
         $news->update($request->only(['title', 'content']));
-        return response()->json($news);
+
+        $newsDTO = new NewsDTO($news->title, $news->content);
+        return response()->json($newsDTO);
     }
 
     public function destroy($id)
